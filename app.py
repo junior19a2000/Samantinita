@@ -4,6 +4,7 @@ import numpy as np
 import random
 import gspread
 import datetime
+import json
 import os
 
 def main(page: ft.Page):
@@ -183,7 +184,9 @@ def main(page: ft.Page):
     def initialize_app():
         nonlocal initialized, samantha, junior, frases
         if not initialized:
-            gs = gspread.service_account(filename = f"credentials.json")
+            credentials_json = os.getenv("CREDENTIALS")
+            credentials_dict = json.loads(credentials_json)
+            gs = gspread.service_account_from_dict(credentials_dict)
             samantha = gs.open_by_key("1vyQ-aZB5mpCseR3p1oKvLX3TIBArC7h81OdxmTU2wYI")
             junior = gs.open_by_key("1hOisjm1adGuZT0gVR0dTJPBUo_Q4IA8U8fj5MgtXomQ")
             frases = pd.read_excel("https://docs.google.com/spreadsheets/d/1I4wwUy_6ykmS8tQSPGwmI2mWtBvS8hkkzYJXk8pQObM/export?format=xlsx&gid=0", sheet_name = 'Frases')["Frases"].to_list()
@@ -230,12 +233,13 @@ def main(page: ft.Page):
                 msg = f'''🎉 Felices {int(((hoy - datetime.date(2024, 6, 1)).days + 1) / 30)} meses juntos bb !!!'''
             container2 = ft.Container(
                 content = ft.Text(
-                    msg, font_family = "RobotoSlab", 
+                    value = msg, 
+                    font_family = "RobotoSlab", 
                     size = 8, 
                     text_align = ft.TextAlign.CENTER,
                     ),
                 width = 300, 
-                alignment = ft.alignment.center_left,
+                alignment = ft.alignment.center,
             )
             page.add(container1, container2)
             page.update()
