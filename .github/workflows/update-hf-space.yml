@@ -20,11 +20,12 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-      - name: Pull from Hugging Face with allow-unrelated-histories
+      - name: Pull from Hugging Face with merge
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git pull --allow-unrelated-histories https://Junior19:$HF_TOKEN@huggingface.co/spaces/Junior19/samantinita main
+          git pull --allow-unrelated-histories --no-rebase https://Junior19:$HF_TOKEN@huggingface.co/spaces/Junior19/samantinita main || true
+          git merge --strategy-option ours
 
       - name: Push to Hugging Face
         env:
